@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+	</head>
+	<body>
+		<table class='table table-bordered table-hover' id='traffic_monitor_table'>
+			<thead>
+				<tr>
+					<th>日期</th>
+					<th>渠道号</th>
+					<th><span>合作方名称</span></th>
+					<th><span>增存量类型</span></th>
+					<th><span>新增用户量</span></th>
+					<th><span>异常天数</span></th>
+					<th><span>异常增量天数</span></th>
+					<th><span>异常减量天数</span></th>
+				</tr>
+			</thead>
+		</table>
+		<input type="radio" name="name" checked="checked" value="1"/>
+		<input type="radio" name="name" checked="checked" value="2"/>
+		<input type="radio" name="name" checked="checked" value="3"/>
+		<table id="testTable" class='table table-bordered table-hover'></table>
+		<table id="testTable1" class='table table-bordered table-hover'></table>
+		<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+		<script type="text/javascript" src="js/jqtable.js" ></script>
+		<script type="text/javascript" src="js/jqtable2.0.js" ></script>
+		<script>
+			var jTable1 = new JTable({
+				target: $("#testTable"),
+				heads: [
+					{
+						"name":"合作方名称",
+						"key":"vendorName",
+						"attributes":{
+							"class":"hehehe",
+							"name":"hohoho",
+							"tooltip":"asdfasdf"
+						},
+						"sortable":true,
+						"resizable":true,
+						"visible":true,
+						"checkBox":{
+							"enabled":true,
+							"isChecked":true,
+							"type":"radio",
+						}
+					},
+					{
+						"name":"yonghuliang",
+						"checkBox":{
+							"enabled":true,
+							isChecked:true
+						}
+					},{
+						"name":"新一列",
+						"key":"c"
+					}
+				],
+				data: [
+					[1,2,3],
+					[4,25,{
+						value:36,
+						attributes:{
+							"class":"xixixi"
+						}
+					}],
+					{
+						vendorName:"huawei",
+						yonghuliang:{
+							value:36,
+							attributes:{
+								"class":"xixixi"
+							}
+						},
+						c:"asdfasdf"
+					}
+				],
+				tdParser:function(o){
+					if(Object.prototype.toString.call(o) === "[object Object]"){
+						return "<td>"+o.value+"</td>";
+					}else{
+						return "<td>"+o+"</td>";
+					}
+				},
+				pagination: {
+					enabled: false,
+				}
+			});
+			var jTable2 = new JTable({
+				target: $("#testTable1"),
+				heads: [
+					{
+						name: "",
+						key: "expand"
+					},{
+						name:"日期",
+						key:"date"
+					},{
+						name:"渠道号",
+						key:"channel"
+					},{
+						name:"合作方名称",
+						key:"vendorName"
+					},{
+						name:"增存量类型",
+						key:"incrementStockType"
+					},{
+						name:"新增用户量",
+						key:"newUserCount"
+					},{
+						name:"异常天数",
+						key:"abnormalDaysCount"
+					},{
+						name:"异常增量天数",
+						key:"posAbnormalDaysCount"
+					},{
+						name:"异常减量天数",
+						key:"negAbnormalDaysCount"
+					}
+				],
+				data:[{"startDate":20150101,"endDate":20150131,"product":66,"channel":991310,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":199458,"posAbnormalDaysCount":1,"negAbnormalDaysCount":1,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":992183,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":173170,"posAbnormalDaysCount":3,"negAbnormalDaysCount":4,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":0,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":69289,"posAbnormalDaysCount":0,"negAbnormalDaysCount":1,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":991697,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":61303,"posAbnormalDaysCount":1,"negAbnormalDaysCount":2,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":991254,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":53156,"posAbnormalDaysCount":5,"negAbnormalDaysCount":5,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":991281,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":46754,"posAbnormalDaysCount":1,"negAbnormalDaysCount":2,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":1366,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":44524,"posAbnormalDaysCount":1,"negAbnormalDaysCount":1,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":996687,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":34842,"posAbnormalDaysCount":1,"negAbnormalDaysCount":1,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":991247,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":31416,"posAbnormalDaysCount":0,"negAbnormalDaysCount":1,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":996310,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":29268,"posAbnormalDaysCount":5,"negAbnormalDaysCount":4,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":997517,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":27630,"posAbnormalDaysCount":1,"negAbnormalDaysCount":1,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":991246,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":23206,"posAbnormalDaysCount":1,"negAbnormalDaysCount":1,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":991653,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":21484,"posAbnormalDaysCount":1,"negAbnormalDaysCount":1,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":77449,"vendorName":"力天保利","vendorId":189,"incrementStockType":"增量一组","newUserCount":19910,"posAbnormalDaysCount":0,"negAbnormalDaysCount":1,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":997787,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":18527,"posAbnormalDaysCount":2,"negAbnormalDaysCount":1,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":1356,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":17645,"posAbnormalDaysCount":0,"negAbnormalDaysCount":2,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":997964,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":16654,"posAbnormalDaysCount":1,"negAbnormalDaysCount":3,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":78427,"vendorName":"北京杰瑞八达","vendorId":864,"incrementStockType":"增量一组","newUserCount":15180,"posAbnormalDaysCount":0,"negAbnormalDaysCount":1,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":79036,"vendorName":"腾讯","vendorId":657,"incrementStockType":"","newUserCount":12727,"posAbnormalDaysCount":2,"negAbnormalDaysCount":1,"detailData":[]},{"startDate":20150101,"endDate":20150131,"product":66,"channel":993602,"vendorName":"unknown","vendorId":0,"incrementStockType":"","newUserCount":11569,"posAbnormalDaysCount":0,"negAbnormalDaysCount":2,"detailData":[]}],
+				dataPreProcess:function(data){
+					data.expand = '<span class="icon-double-angle-up icon-double-angle-down" data-channel="0" data-vendor="0"></span>';
+					data.date = data.startDate + " - " + data.endDate;
+					data.abnormalDaysCount = data.posAbnormalDaysCount + data.negAbnormalDaysCount;
+				}
+			});
+		</script>
+	</body>
+</html>
