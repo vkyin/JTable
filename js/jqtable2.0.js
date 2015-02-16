@@ -12,6 +12,7 @@
 	var isUndefined = isType("Undefined");
 	var isString = isType("String");
 	var isNumber = isType("Number");
+	
 	var JTable = function(options) {
 		this.options = {
 			target: null,
@@ -111,13 +112,13 @@
 			var target = options.target;
 			target.append("<tbody></tbody>");
 			preProcessData();
-			self.updateTable();
+			self.updateData();
 		}
 
 		function initTfoot() {
 			var target = options.target;
 			target.append("<tfoot></tfoot>");
-			self.updateTable();
+			self.updateData();
 		}
 
 		function eventsBinding() {
@@ -156,25 +157,32 @@
 
 	JTable.prototype = {
 		constructor: JTable,
-		setRow: function(obj, isUpdate) {
+		addRows: function(arr){
 			var data = this.options.data;
-			this.options.dataPreProcess(obj);
-			data.push(obj);
-			if (isUpdate === true) {
-				this.updateTable();
+			var dataPreProcess = this.options.dataPreProcess;
+			if(isArray(arr)){
+				for(var i = 0,length = arr.length;i<length;++i){
+					dataPreProcess(arr[i]);
+					data.push(arr[i]);
+				}
 			}
+			this.updateData();
 		},
-		updateTable: function(data) {
+		updateData: function(data) {
 			var target = this.options.target;
 			var heads = this.options.heads;
 			var tdParser = this.options.tdParser;
 			var trParser = this.options.trParser;
+			var dataPreProcess = function(){};
 			var checkBoxTemplate = '<input type="{type}" name="{name}" {isChecked}/>';
 			var keys = [];
 			var checkType = [];
 			var tbody = target.find(">tbody");
 			var fragment = $(document.createDocumentFragment());
 			var tr, td, checkBoxHtml;
+			if(!isUndefined(data)){
+				dataPreProcess = this.options.dataPreProcess;
+			}
 			data = data || this.options.data;
 			this.options.data = data;
 			for (var i = 0, length = heads.length; i < length; ++i) {
@@ -183,6 +191,7 @@
 			}
 			if (isArray(data)) {
 				for (var i = 0, length1 = data.length; i < length1; ++i) {
+					dataPreProcess(data[i]);
 					tr = $(trParser(data[i]));
 					for (var j = 0, length2 = keys.length; j < length2; ++j) {
 						td = $(tdParser(isUndefined(data[i][keys[j]])? data[i][j]:data[i][keys[j]]));
