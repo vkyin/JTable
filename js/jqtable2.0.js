@@ -12,7 +12,7 @@
 	var isUndefined = isType("Undefined");
 	var isString = isType("String");
 	var isNumber = isType("Number");
-	
+
 	var JTable = function(options) {
 		this.options = {
 			target: null,
@@ -24,10 +24,7 @@
 			tdParser: function(tdObj) {
 				return parseTd(tdObj);
 			},
-			pagination: {
-				enabled: false,
-			},
-			dataPreProcess:function(data){},
+			dataPreProcess: function(data) {},
 		};
 		$.extend(true, this.options, options);
 		var options = this.options;
@@ -145,23 +142,23 @@
 		function parseTr(trObj) {
 			return "<tr></tr>";
 		}
-		
-		function preProcessData(){
+
+		function preProcessData() {
 			var data = options.data;
 			var dataPreProcess = options.dataPreProcess;
-			for(var i = data.length;i;--i){
-				dataPreProcess(data[i-1]);
+			for (var i = data.length; i; --i) {
+				dataPreProcess(data[i - 1]);
 			}
 		}
 	}
 
 	JTable.prototype = {
 		constructor: JTable,
-		addRows: function(arr){
+		addRows: function(arr) {
 			var data = this.options.data;
 			var dataPreProcess = this.options.dataPreProcess;
-			if(isArray(arr)){
-				for(var i = 0,length = arr.length;i<length;++i){
+			if (isArray(arr)) {
+				for (var i = 0, length = arr.length; i < length; ++i) {
 					dataPreProcess(arr[i]);
 					data.push(arr[i]);
 				}
@@ -173,14 +170,14 @@
 			var heads = this.options.heads;
 			var tdParser = this.options.tdParser;
 			var trParser = this.options.trParser;
-			var dataPreProcess = function(){};
+			var dataPreProcess = function() {};
 			var checkBoxTemplate = '<input type="{type}" name="{name}" {isChecked}/>';
 			var keys = [];
 			var checkType = [];
 			var tbody = target.find(">tbody");
 			var fragment = $(document.createDocumentFragment());
 			var tr, td, checkBoxHtml;
-			if(!isUndefined(data)){
+			if (!isUndefined(data)) {
 				dataPreProcess = this.options.dataPreProcess;
 			}
 			data = data || this.options.data;
@@ -194,7 +191,7 @@
 					dataPreProcess(data[i]);
 					tr = $(trParser(data[i]));
 					for (var j = 0, length2 = keys.length; j < length2; ++j) {
-						td = $(tdParser(isUndefined(data[i][keys[j]])? data[i][j]:data[i][keys[j]]));
+						td = $(tdParser(isUndefined(data[i][keys[j]]) ? data[i][j] : data[i][keys[j]]));
 						if (checkType[j].enabled) {
 							checkBoxHtml = checkBoxTemplate.replace(/{type}/g, checkType[j].type)
 								.replace(/{name}/g, keys[j])
@@ -217,7 +214,7 @@
 				if (isUndefined(col)) {
 					return arr;
 				}
-				col = isUndefined(col.key)? col.name : col.key;
+				col = isUndefined(col.key) ? col.name : col.key;
 			}
 			var a = target.find(">tbody").find("[name=" + col + "]:checked").parents("tr");
 			for (var i = a.length; i; --i) {
@@ -227,5 +224,109 @@
 		}
 	};
 
+	JTable.prototype.pagination = function(_options) {
+		var options = {
+			"pageKey": {
+				"total": "total",
+				"pageSize": "pageSize",
+				"curPage": "curPage"
+			},
+			"infoText": "total:{total},now:{lIndex}-{rIndex}",
+			"pageSizeInfoText": "{amount} rows each page",
+			"previousText": "&laquo;",
+			"nextText": "&raquo;",
+			"jumpText": "jump to {input}",
+			"confirmText": "Go",
+
+		}
+	};
 	window.JTable = JTable;
+})(jQuery, window);
+
+
+
+
+
+
+
+
+
+
+
+
+
+;
+(function($, window) {
+	"use strict";
+
+	function isType(type) {
+		return function(obj) {
+			return Object.prototype.toString.call(obj) === "[object " + type + "]";
+		}
+	}
+	var isArray = isType("Array");
+	var isObject = isType("Object");
+	var isUndefined = isType("Undefined");
+	var isString = isType("String");
+	var isNumber = isType("Number");
+
+	JTable.prototype.pagination = init;
+
+	function init(args) {
+		var defaults = {
+			"total": 0,
+			"pageSize": 10,
+			"curPage": 1,
+			"infoText": "total:{total},now:{lIndex}-{rIndex}",
+			"pageSizeInfoText": "{amount} rows each page",
+			"previousText": "&laquo;",
+			"nextText": "&raquo;",
+			"jumpText": "jump to {input}",
+			"confirmText": "Go",
+			"onPageClick": function(pageNumber, event) {},
+			"onInit":function(){}
+		}
+		$.extend(true, defaults, args);
+		this.options.pagination = defaults;
+		var infoText = defaults.infoText;
+		var pageSizeInfoText = defaults.pageSizeInfoText;
+		var previousText = defaults.previousText;
+		var nextText = defaults.nextText;
+		var jumpText = defaults.jumpText;
+		var confirmText = defaults.confirmText;
+		var tFoot = this.options.target.find(">tfoot");
+		var pagesCount = Math.ceil(defaults.total / defaults.pageSize);
+		var tr = $('<tr><td colspan="999" class=""><ul class="pagination pull-right"></ul></td></tr>');
+		var ul = tr.find("ul");
+		
+		initPagination();
+		eventsBinding();
+		defaults.onInit();
+		
+		function initPagination() {
+			ul.append('<li><a href="javascript:void(0)" data-page-number="previous"><span aria-hidden="true">' + previousText + '</span></a></li>');
+			for (var i = 0; i < pagesCount; ++i) {
+				ul.append('<li><a href="javascript:void(0)" data-page-number="' + (i + 1) + '">' + (i + 1) + '</a></li>');
+			}
+			ul.append('<li><a href="javascript:void(0)" data-page-number="Next"><span aria-hidden="true">' + nextText + '</span></a></li>');
+			tFoot.append(tr);
+		}
+		
+		function eventsBinding(){
+			ul.on("click","li[class!=active][class!=disabled]>a",function(e){
+				var pageNumber = $(this).data("page-number");
+				var curPage = defaults.curPage;
+				if((pageNumber+"").toLowerCase() === "previous"){
+					pageNumber = curPage<=1?1:(curPage-1);
+				}else if((pageNumber+"").toLowerCase() === "next"){
+					pageNumber = curPage==pagesCount?1:(curPage+1);
+				}
+				if(isNumber(pageNumber)){
+					defaults.curPage = pageNumber;
+					defaults.onPageClick(pageNumber,e);
+				}
+			});
+		}
+	};
+
 })(jQuery, window);
