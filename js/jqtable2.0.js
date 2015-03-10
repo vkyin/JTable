@@ -296,35 +296,67 @@
 		var confirmText = defaults.confirmText;
 		var tFoot = this.options.target.find(">tfoot");
 		var pagesCount = Math.ceil(defaults.total / defaults.pageSize);
-		var tr = $('<tr><td colspan="999" class=""><ul class="pagination pull-right"></ul></td></tr>');
-		var ul = tr.find("ul");
+		var tr = $('<tr><td colspan="999" class=""></td></tr>');
 		
-		initPagination();
+		draw();
 		eventsBinding();
 		defaults.onInit();
 		
-		function initPagination() {
-			ul.append('<li><a href="javascript:void(0)" data-page-number="previous"><span aria-hidden="true">' + previousText + '</span></a></li>');
-			for (var i = 0; i < pagesCount; ++i) {
-				ul.append('<li><a href="javascript:void(0)" data-page-number="' + (i + 1) + '">' + (i + 1) + '</a></li>');
+		function draw() {
+			var curPage = defaults.curPage;
+			var i;
+			var ul = $('<ul class="pagination pull-right"></ul>');
+			if(pagesCount>0){
+				ul.append('<li><a href="javascript:void(0)" data-page-number="previous"><span aria-hidden="true">' + previousText + '</span></a></li>');
+				if(curPage<=5){
+					for(i = 0;i<curPage-1;++i){
+						ul.append('<li><a href="javascript:void(0)" data-page-number="' + (i + 1) + '">' + (i + 1) + '</a></li>');
+					}
+				}else{
+					ul.append('<li><a href="javascript:void(0)" data-page-number="1">1</a></li>');
+					for(i = 1;i<curPage-1;++i){
+						if(i===1){
+							ul.append('<li><a href="javascript:void(0)" class="disabled">...</a></li>');
+							continue;
+						}
+						if(i<curPage-3){
+							continue;
+						}
+						ul.append('<li><a href="javascript:void(0)" data-page-number="' + (i + 1) + '">' + (i + 1) + '</a></li>');
+					}
+				}
+				ul.append('<li class="active"><a href="javascript:void(0)" data-page-number="' + curPage + '">' + curPage + '</a></li>');
+				for(i=curPage;i<pagesCount;++i){
+					if(i<curPage+2){
+						ul.append('<li><a href="javascript:void(0)" data-page-number="' + (i + 1) + '">' + (i + 1) + '</a></li>');
+					}else if(i<pagesCount-2){
+						ul.append('<li><a href="javascript:void(0)" class="disabled">...</a></li>');
+						ul.append('<li><a href="javascript:void(0)" data-page-number="' + pagesCount + '">' + pagesCount + '</a></li>');
+						break;
+					}else{
+						ul.append('<li><a href="javascript:void(0)" data-page-number="' + (i + 1) + '">' + (i + 1) + '</a></li>');
+					}
+				}
+				ul.append('<li><a href="javascript:void(0)" data-page-number="Next"><span aria-hidden="true">' + nextText + '</span></a></li>');
+				tr.find("td").html(ul);
+				tFoot.append(tr);
 			}
-			ul.append('<li><a href="javascript:void(0)" data-page-number="Next"><span aria-hidden="true">' + nextText + '</span></a></li>');
-			tFoot.append(tr);
 		}
 		
 		function eventsBinding(){
-			ul.on("click","li[class!=active][class!=disabled]>a",function(e){
+			tr.on("click","ul>li[class!=active][class!=disabled]>a",function(e){
 				var pageNumber = $(this).data("page-number");
 				var curPage = defaults.curPage;
 				if((pageNumber+"").toLowerCase() === "previous"){
 					pageNumber = curPage<=1?1:(curPage-1);
 				}else if((pageNumber+"").toLowerCase() === "next"){
-					pageNumber = curPage==pagesCount?1:(curPage+1);
+					pageNumber = curPage==pagesCount?pagesCount:(curPage+1);
 				}
 				if(isNumber(pageNumber)){
 					defaults.curPage = pageNumber;
 					defaults.onPageClick(pageNumber,e);
 				}
+				draw();
 			});
 		}
 	};
